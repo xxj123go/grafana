@@ -78,6 +78,7 @@ interface GraphProps {
   data: any[];
   height?: string; // e.g., '200px'
   id?: string;
+  markings?: any[];
   range: RawTimeRange;
   split?: boolean;
   size?: { width: number; height: number };
@@ -144,7 +145,7 @@ export class Graph extends PureComponent<GraphProps, GraphState> {
   };
 
   getDynamicOptions() {
-    const { range, size } = this.props;
+    const { range, size, markings } = this.props;
     const ticks = (size.width || 0) / 100;
     let { from, to } = range;
     if (!moment.isMoment(from)) {
@@ -155,7 +156,7 @@ export class Graph extends PureComponent<GraphProps, GraphState> {
     }
     const min = from.valueOf();
     const max = to.valueOf();
-    return {
+    const result = {
       xaxis: {
         mode: 'time',
         min: min,
@@ -166,6 +167,13 @@ export class Graph extends PureComponent<GraphProps, GraphState> {
         timeformat: time_format(ticks, min, max),
       },
     };
+    if (markings) {
+      (result as any).grid = {
+        ...FLOT_OPTIONS.grid,
+        markings,
+      };
+    }
+    return result;
   }
 
   onShowAllTimeSeries = () => {
