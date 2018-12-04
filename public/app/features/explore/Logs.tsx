@@ -37,6 +37,14 @@ const graphOptions = {
   },
 };
 
+const limitMarkingsLabel = (
+  <div className="logs-limit-label">
+    <div title="To see logs from this range, shift left on the time picker, or try tightening the search parameters">
+      Limit reached
+    </div>
+  </div>
+);
+
 function getLimitMarkings(series: TimeSeries[], range: RawTimeRange): any[] {
   const firstTimes = series.reduce((acc, s) => {
     if (s.datapoints.length > 0) {
@@ -53,7 +61,7 @@ function getLimitMarkings(series: TimeSeries[], range: RawTimeRange): any[] {
 
   return [
     {
-      color: 'rgba(254,172,182,0.5)',
+      color: 'rgba(254,172,182,0.25)',
       xaxis: { from: startTime, to: oldestTime },
     },
   ];
@@ -288,6 +296,7 @@ export default class Logs extends PureComponent<LogsProps, LogsState> {
             data={data.series}
             height="100px"
             markings={limitMarkings}
+            markingsLabel={limitMarkingsLabel}
             range={range}
             id={`explore-logs-graph-${position}`}
             onChangeTime={this.props.onChangeTime}
